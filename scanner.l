@@ -32,6 +32,7 @@ YYSTYPE yylval;  // manually declared for pp1, later Yacc provides
 * just scanned to the client. (Operates similarly to yylval above)
 */
 struct yyltype yylloc; // manually dclared for pp1, later Yacc provides
+
 static int numCol, numRow;
 
 /* Macro: YY_USER_ACTION 
