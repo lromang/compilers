@@ -32,6 +32,7 @@ YYSTYPE yylval;  // manually declared for pp1, later Yacc provides
 * just scanned to the client. (Operates similarly to yylval above)
 */
 struct yyltype yylloc; // manually dclared for pp1, later Yacc provides
+static int numCol, numRow;
 
 /* Macro: YY_USER_ACTION 
 * ---------------------
@@ -83,6 +84,8 @@ static void DoBeforeEachAction();
 "break"           { return T_Break; }
 "New"             { return T_New; }
 "NewArray"        { return T_NewArray; }
+[\n]              { numRow++; numCol = 1;}
+[\t]              { numCol += 8; }   
 [ \t]             ;
 ([-+*/\(\)\{\},;.])         { return (int) yytext[0]; }
 "true" | "false"            { yylval.boolConstant    = yytext == "true"; return T_BoolConstant; }
@@ -120,6 +123,8 @@ void InitScanner()
 {
 PrintDebug("lex", "Initializing scanner");
 yy_flex_debug = false;
+numRow = 1;
+numCol = 1;
 }
 
 
@@ -130,4 +135,8 @@ yy_flex_debug = false;
 */
 static void DoBeforeEachAction()
 {
+yylloc.first_line = numRow;
+yylloc.first_column = numCol;
+yylloc.last_column  = numCol + yyleng -1;
+numCol += yyleng;
 }
